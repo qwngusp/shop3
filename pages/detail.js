@@ -1,7 +1,6 @@
 // ===== P2: 상품 상세 페이지 =====
 
-const DetailPage = (() => {
-  const FIXED_PRICE = 10000;
+const DetailPage = (() => { 
   const COUPON_RATE = 0.1;
 
   let currentProduct = null;
@@ -24,10 +23,13 @@ const DetailPage = (() => {
     try { return JSON.parse(sessionStorage.getItem('couponzone_downloaded') || '[]'); } catch { return []; }
   };
 
+  // 상품의 기준 가격 (discountedPrice 사용)
+  const getBasePrice = () => currentProduct.discountedPrice;
+
   const getCurrentPrice = () =>
     isCouponApplied(currentProduct.id)
-      ? Math.floor(FIXED_PRICE * (1 - COUPON_RATE))
-      : FIXED_PRICE;
+      ? Math.floor(getBasePrice() * (1 - COUPON_RATE))
+      : getBasePrice();
 
   // ── 초기화 ──────────────────────────────────────────
   const init = async (params) => {
@@ -73,8 +75,8 @@ const DetailPage = (() => {
       </div>
 
       <div class="detail-info">
-        <p class="detail-brand">브랜드 ${p.brand}</p>
-        <h1 class="detail-name">${p.name} ${p.capacity}</h1>
+        <p class="detail-brand">${p.brand}</p>
+        <h1 class="detail-name">${p.name}</h1>
         <div class="detail-rating-row">
           <span style="color:var(--star);font-size:13px;">★★★★★</span>
           <strong>${p.rating}</strong>
@@ -83,11 +85,10 @@ const DetailPage = (() => {
         <div class="detail-price-wrap" id="detail-price-wrap">
           ${priceHTML(applied)}
         </div>
-        <!--
         <div class="detail-meta-row">
           ${Utils.shippingBadge(p.shipping)}
+          <span style="font-size:12px;color:var(--text-muted);">· ${p.capacity}</span>
         </div>
-        -->
       </div>
 
       <div class="divider"></div>
@@ -95,13 +96,12 @@ const DetailPage = (() => {
       <!-- 배송 토글 -->
       <div class="detail-delivery-toggle" id="delivery-toggle" onclick="DetailPage.toggleDelivery()">
         <span class="detail-delivery-label">배송 정보</span>
-        <svg class="delivery-toggle-icon" id="delivery-toggle-icon" width="20" height="20" viewBox="0 0 12 12" fill="#999">
-          <polygon points="2,2 10,2 6,10"/>
-        </svg>
         <div class="detail-delivery-summary">
           <span class="detail-delivery-type-text">배송비 및 배송일자 관련 정보</span>
         </div>
-        
+        <svg class="delivery-toggle-icon" id="delivery-toggle-icon" width="20" height="20" viewBox="0 0 12 12" fill="#999">
+          <polygon points="2,2 10,2 6,10"/>
+        </svg>
       </div>
       <div class="detail-delivery-detail" id="delivery-detail" style="display:none;">
         <p class="detail-delivery-addr">- 배송 받을 주소 › <strong>우리집</strong></p>
@@ -147,22 +147,27 @@ const DetailPage = (() => {
 
   // ── 가격 HTML ────────────────────────────────────────
   const priceHTML = (applied) => {
+    const basePrice = getBasePrice();
     if (applied) {
-      const discounted = Math.floor(FIXED_PRICE * (1 - COUPON_RATE));
+      const discounted = Math.floor(basePrice * (1 - COUPON_RATE));
       return `
         <div class="detail-price-row">
-          <span class="detail-discount-rate">${COUPON_RATE * 100}%</span>
+          <span class="detail-discount-rate">${currentProduct.discountRate + COUPON_RATE * 100}%</span>
           <span class="detail-price">${discounted.toLocaleString()}원</span>
         </div>
         <div style="display:flex;align-items:center;gap:8px;margin-top:2px;">
-          <span class="detail-original-price">${FIXED_PRICE.toLocaleString()}원</span>
+          <span class="detail-original-price">${basePrice.toLocaleString()}원</span>
           <span class="coupon-applied-tag">쿠폰 적용 ✓</span>
         </div>
       `;
     }
     return `
       <div class="detail-price-row">
-        <span class="detail-price">${FIXED_PRICE.toLocaleString()}원</span>
+        <span class="detail-discount-rate">${currentProduct.discountRate}%</span>
+        <span class="detail-price">${basePrice.toLocaleString()}원</span>
+      </div>
+      <div style="margin-top:2px;">
+        <span class="detail-original-price">${currentProduct.originalPrice.toLocaleString()}원</span>
       </div>
     `;
   };
