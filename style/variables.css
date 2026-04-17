@@ -1,0 +1,99 @@
+/* ===== CSS RESET ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+/* ===== CSS VARIABLES ===== */
+:root {
+  /* Colors */
+  --primary: #FF4B36;
+  --primary-light: #FF6B5A;
+  --primary-dim: #fff1ef;
+  --accent: #0075D1;
+  --accent-light: #e8f3ff;
+
+  --bg: #F5F5F5;
+  --bg-white: #FFFFFF;
+  --bg-gray: #F8F8F8;
+
+  --text-primary: #111111;
+  --text-secondary: #555555;
+  --text-muted: #999999;
+  --text-white: #FFFFFF;
+
+  --border: #E8E8E8;
+  --border-strong: #CCCCCC;
+
+  --rocket: #00B4D8;
+  --star: #FFB800;
+  --discount: #FF4B36;
+  --badge-new: #4CAF50;
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+
+  /* Border radius */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  /* Shadow */
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.16);
+
+  /* Header */
+  --header-height: 52px;
+  --bottom-nav-height: 56px;
+
+  /* Transition */
+  --transition: 0.2s ease;
+}

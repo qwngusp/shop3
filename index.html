@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <title>ShopLab</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style/variables.css" />
+  <link rel="stylesheet" href="style/components.css" />
+  <link rel="stylesheet" href="style/pages.css" />
+</head>
+<body>
+
+<div id="app">
+
+  <!-- P0: 식별 정보 입력 -->
+  <div id="page-identify" class="page"></div>
+
+  <!-- P1: 상품 리스트 -->
+  <div id="page-list" class="page"></div>
+
+  <!-- P2: 상품 상세 -->
+  <div id="page-detail" class="page"></div>
+
+  <!-- MAIN: 메인 페이지 (쿠폰 경유 모드 포함) -->
+  <div id="page-main" class="page"></div>
+
+  <!-- P4: 쿠폰존 페이지 -->
+  <div id="page-coupon-zone" class="page"></div>
+
+  <!-- P4-old: 쿠폰 페이지 (현재 미사용) -->
+  <div id="page-coupon" class="page"></div>
+
+  <!-- P5: 장바구니 -->
+  <div id="page-cart" class="page"></div>
+
+  <!-- P6: 결제 -->
+  <div id="page-checkout" class="page"></div>
+
+  <!-- P7: 종료 안내 -->
+  <div id="page-done" class="page"></div>
+
+</div>
+
+<!-- 토스트 -->
+<div id="toast"></div>
+
+<!-- JS 모듈 (의존성 순서 준수) -->
+<script src="js/state.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/logger.js"></script>
+<script src="js/router.js"></script>
+<script src="pages/identify.js"></script>
+<script src="pages/main.js"></script>
+<script src="pages/list.js"></script>
+<script src="pages/detail.js"></script>
+<script src="pages/couponzone.js"></script>
+<script src="pages/pages.js"></script>
+
+<script>
+  Router.register('identify',    () => IdentifyPage.init());
+  Router.register('main',        (params) => MainPage.init(params));
+  Router.register('list',        () => ListPage.init());
+  Router.register('detail',      (params) => DetailPage.init(params));
+  Router.register('coupon-zone', () => CouponZonePage.init());
+  Router.register('coupon',      (params) => CouponPage.init(params));
+  Router.register('cart',        () => CartPage.init());
+  Router.register('checkout',    (params) => CheckoutPage.init(params));
+  Router.register('done',        () => DonePage.init());
+
+  Router.init();
+</script>
+
+</body>
+</html>
