@@ -7,12 +7,15 @@
     "originalPrice": 18000,
     "discountRate": 20,
     "discountedPrice": 14400,
-    "pricePerUnit": "100ml당 240원",
+    "pricePerUnit": "1L당 2,400원",
     "capacity": "2L x 3개",
     "shipping": "무료배송",
     "rating": 4.6,
     "reviewCount": 2890,
-    "options": ["2L x 3개"]
+    "options": [
+      "2L x 3개"
+    ],
+    "shippingFee": 0
   },
   {
     "id": "p002",
@@ -22,12 +25,15 @@
     "originalPrice": 31000,
     "discountRate": 51,
     "discountedPrice": 15000,
-    "pricePerUnit": "100ml당 500원",
+    "pricePerUnit": "500ml당 2,500원",
     "capacity": "1.5L x 2개",
     "shipping": "배송비 2,500원",
     "rating": 4.9,
     "reviewCount": 5321,
-    "options": ["1.5L x 2개"]
+    "options": [
+      "1.5L x 2개"
+    ],
+    "shippingFee": 2500
   },
   {
     "id": "p003",
@@ -42,7 +48,10 @@
     "shipping": "무료배송",
     "rating": 4.6,
     "reviewCount": 8421,
-    "options": ["3L x 4개"]
+    "options": [
+      "3L x 4개"
+    ],
+    "shippingFee": 0
   },
   {
     "id": "p004",
@@ -52,12 +61,15 @@
     "originalPrice": 19900,
     "discountRate": 45,
     "discountedPrice": 10900,
-    "pricePerUnit": "100ml당 176원",
+    "pricePerUnit": "1개당 5,450원",
     "capacity": "3.1L x 2개",
     "shipping": "배송비 2,500원",
     "rating": 4.6,
     "reviewCount": 3100,
-    "options": ["3.1L x 2개"]
+    "options": [
+      "3.1L x 2개"
+    ],
+    "shippingFee": 2500
   },
   {
     "id": "p005",
@@ -67,12 +79,15 @@
     "originalPrice": 51600,
     "discountRate": 60,
     "discountedPrice": 20190,
-    "pricePerUnit": "100ml당 252원",
+    "pricePerUnit": "1L당 2,520원",
     "capacity": "2L x 4개",
     "shipping": "무료배송",
     "rating": 4.4,
     "reviewCount": 2781,
-    "options": ["2L x 4개"]
+    "options": [
+      "2L x 4개"
+    ],
+    "shippingFee": 0
   },
   {
     "id": "p006",
@@ -82,12 +97,15 @@
     "originalPrice": 21200,
     "discountRate": 42,
     "discountedPrice": 12100,
-    "pricePerUnit": "100ml당 672원",
+    "pricePerUnit": "500ml당 3,360원",
     "capacity": "1.8L x 1개",
     "shipping": "배송비 2,500원",
     "rating": 4.5,
     "reviewCount": 2100,
-    "options": ["1.8L x 1개"]
+    "options": [
+      "1.8L x 1개"
+    ],
+    "shippingFee": 2500
   },
   {
     "id": "p007",
@@ -97,12 +115,15 @@
     "originalPrice": 43900,
     "discountRate": 0,
     "discountedPrice": 43900,
-    "pricePerUnit": "100ml당 407원",
+    "pricePerUnit": "1개당 10,975원",
     "capacity": "2.7L x 4개",
     "shipping": "무료배송",
     "rating": 4.5,
     "reviewCount": 3201,
-    "options": ["2.7L x 4개"]
+    "options": [
+      "2.7L x 4개"
+    ],
+    "shippingFee": 0
   },
   {
     "id": "p008",
@@ -112,12 +133,15 @@
     "originalPrice": 31500,
     "discountRate": 40,
     "discountedPrice": 18900,
-    "pricePerUnit": "100ml당 225원",
+    "pricePerUnit": "1L당 2,250원",
     "capacity": "2.1L x 4개",
     "shipping": "무료배송",
     "rating": 4.4,
     "reviewCount": 1500,
-    "options": ["2.1L x 4개"]
+    "options": [
+      "2.1L x 4개"
+    ],
+    "shippingFee": 0
   },
   {
     "id": "p009",
@@ -132,7 +156,10 @@
     "shipping": "무료배송",
     "rating": 4.3,
     "reviewCount": 1980,
-    "options": ["2L x 4개"]
+    "options": [
+      "2L x 4개"
+    ],
+    "shippingFee": 0
   },
   {
     "id": "p010",
@@ -147,7 +174,10 @@
     "shipping": "무료배송",
     "rating": 4.6,
     "reviewCount": 1900,
-    "options": ["1.5L x 2개"]
+    "options": [
+      "1.5L x 2개"
+    ],
+    "shippingFee": 0
   },
   {
     "id": "p011",
@@ -157,12 +187,15 @@
     "originalPrice": 31600,
     "discountRate": 37,
     "discountedPrice": 19600,
-    "pricePerUnit": "100ml당 245원",
+    "pricePerUnit": "1개당 4,900원",
     "capacity": "2L x 4개",
     "shipping": "무료배송",
     "rating": 4.7,
     "reviewCount": 9632,
-    "options": ["2L x 4개"]
+    "options": [
+      "2L x 4개"
+    ],
+    "shippingFee": 0
   },
   {
     "id": "p012",
@@ -177,7 +210,10 @@
     "shipping": "배송비 3,000원",
     "rating": 4.5,
     "reviewCount": 2210,
-    "options": ["2L x 2개"]
+    "options": [
+      "2L x 2개"
+    ],
+    "shippingFee": 3000
   },
   {
     "id": "p013",
@@ -187,12 +223,15 @@
     "originalPrice": 14900,
     "discountRate": 29,
     "discountedPrice": 10500,
-    "pricePerUnit": "100ml당 328원",
+    "pricePerUnit": "500ml당 1,640원",
     "capacity": "3.2L x 1개",
     "shipping": "배송비 2,500원",
     "rating": 4.3,
     "reviewCount": 980,
-    "options": ["3.2L x 1개"]
+    "options": [
+      "3.2L x 1개"
+    ],
+    "shippingFee": 2500
   },
   {
     "id": "p014",
@@ -207,7 +246,10 @@
     "shipping": "배송비 3,000원",
     "rating": 4.8,
     "reviewCount": 12453,
-    "options": ["3.05L x 4개"]
+    "options": [
+      "3.05L x 4개"
+    ],
+    "shippingFee": 3000
   },
   {
     "id": "p015",
@@ -217,12 +259,15 @@
     "originalPrice": 53800,
     "discountRate": 56,
     "discountedPrice": 23400,
-    "pricePerUnit": "100ml당 433원",
+    "pricePerUnit": "1L당 4,330원",
     "capacity": "2.7L x 2개",
     "shipping": "무료배송",
     "rating": 4.5,
     "reviewCount": 2100,
-    "options": ["2.7L x 2개"]
+    "options": [
+      "2.7L x 2개"
+    ],
+    "shippingFee": 0
   },
   {
     "id": "p016",
@@ -232,12 +277,15 @@
     "originalPrice": 17400,
     "discountRate": 44,
     "discountedPrice": 9600,
-    "pricePerUnit": "100ml당 240원",
+    "pricePerUnit": "1개당 4,800원",
     "capacity": "2L x 2개",
     "shipping": "배송비 3,000원",
     "rating": 4.4,
     "reviewCount": 1800,
-    "options": ["2L x 2개"]
+    "options": [
+      "2L x 2개"
+    ],
+    "shippingFee": 3000
   },
   {
     "id": "p017",
@@ -252,7 +300,10 @@
     "shipping": "무료배송",
     "rating": 4.6,
     "reviewCount": 1670,
-    "options": ["3.2L x 2개"]
+    "options": [
+      "3.2L x 2개"
+    ],
+    "shippingFee": 0
   },
   {
     "id": "p018",
@@ -262,12 +313,15 @@
     "originalPrice": 31900,
     "discountRate": 45,
     "discountedPrice": 17400,
-    "pricePerUnit": "100ml당 696원",
+    "pricePerUnit": "500ml당 3,480원",
     "capacity": "2.5L x 1개",
     "shipping": "무료배송",
     "rating": 4.6,
     "reviewCount": 4120,
-    "options": ["2.5L x 1개"]
+    "options": [
+      "2.5L x 1개"
+    ],
+    "shippingFee": 0
   },
   {
     "id": "p019",
@@ -277,12 +331,15 @@
     "originalPrice": 64800,
     "discountRate": 36,
     "discountedPrice": 41380,
-    "pricePerUnit": "100ml당 690원",
+    "pricePerUnit": "1개당 20,690원",
     "capacity": "3L x 2개",
     "shipping": "무료배송",
     "rating": 4.7,
     "reviewCount": 2700,
-    "options": ["3L x 2개"]
+    "options": [
+      "3L x 2개"
+    ],
+    "shippingFee": 0
   },
   {
     "id": "p020",
@@ -292,11 +349,14 @@
     "originalPrice": 36500,
     "discountRate": 37,
     "discountedPrice": 22900,
-    "pricePerUnit": "100ml당 260원",
+    "pricePerUnit": "1L당 2,600원",
     "capacity": "2.2L x 4개",
     "shipping": "무료배송",
     "rating": 4.7,
     "reviewCount": 3500,
-    "options": ["2.2L x 4개"]
+    "options": [
+      "2.2L x 4개"
+    ],
+    "shippingFee": 0
   }
 ]
