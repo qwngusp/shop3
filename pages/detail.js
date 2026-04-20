@@ -75,8 +75,11 @@ const DetailPage = (() => {
       </div>
 
       <div class="detail-info">
-        <p class="detail-brand">${p.brand}</p>
-        <h1 class="detail-name">${p.name}</h1>
+        <p class="detail-brand">브랜드 ${p.brand}</p>
+        <div class="detail-name-row">
+          <h1 class="detail-name">${p.name} ${p.capacity}</h1>
+          <span class="detail-per-unit">(${p.pricePerUnit})</span>
+        </div>
         <div class="detail-rating-row">
           <span style="color:var(--star);font-size:13px;">★★★★★</span>
           <strong>${p.rating}</strong>
@@ -84,10 +87,6 @@ const DetailPage = (() => {
         </div>
         <div class="detail-price-wrap" id="detail-price-wrap">
           ${priceHTML(applied)}
-        </div>
-        <div class="detail-meta-row">
-          ${Utils.shippingBadge(p.shipping)}
-          <span style="font-size:12px;color:var(--text-muted);">· ${p.capacity}</span>
         </div>
       </div>
 
