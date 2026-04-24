@@ -3,16 +3,16 @@
 const CouponZonePage = (() => {
 
   const COUPONS = [
-    { id: 'C_L1',        label: '20,000원', name: 'VIP 감사권',         desc: '20만원 이상 구매 시',             expire: '2026.12.31' },
-    { id: 'C_L2',        label: '5%',       name: '가전 디지털 할인',    desc: '냉장고/세탁기 구매 시',           expire: '2026.06.30' },
-    { id: 'C_L3',        label: '무료배송', name: '해외직구 쿠폰',       desc: '해외 배송 5만원 이상',            expire: '2026.05.15' },
-    { id: 'C_L4',        label: '2,000원',  name: '첫 결제 쿠폰',        desc: '특정 카드 10만원 이상',           expire: '2026.12.31' },
-    { id: 'C_L5',        label: '15,000원', name: '인테리어 할인',        desc: '가구 30만원 이상 구매 시',       expire: '2026.12.31' },
-    { id: 'COUPON_10PCT',label: '10%',      name: '리빙/세제 기획전 쿠폰', desc: '세제 카테고리 1만원 이상 구매 시', expire: '2026.12.31' },
-    { id: 'C_L6',        label: '1,000원',  name: '도서 교육 할인',       desc: '도서 15만원 이상 구매 시',       expire: '2026.04.30' },
-    { id: 'C_L7',        label: '3%',       name: '반려동물 쿠폰',        desc: '사료 8만원 이상 구매 시',        expire: '2026.08.20' },
-    { id: 'C_L8',        label: '5,000원',  name: '스포츠 지원금',        desc: '골프 25만원 이상 구매 시',       expire: '2026.12.31' },
-    { id: 'C_L9',        label: '10,000원', name: '백화점 전용권',         desc: '입점 브랜드 15만원 이상',       expire: '2026.10.10' },
+    { id: 'C_L1',        label: '10%',      name: '생활용품 기획전 쿠폰',   desc: '생활용품 1만원 이상 구매 시',      expire: '2026.12.31' },
+    { id: 'C_L2',        label: '10%',      name: '주방/세제 할인 쿠폰',    desc: '주방용품 1만원 이상 구매 시',      expire: '2026.12.31' },
+    { id: 'C_L3',        label: '10%',      name: '홈케어 전용 쿠폰',       desc: '홈케어 카테고리 1만원 이상',       expire: '2026.06.30' },
+    { id: 'C_L4',        label: '10%',      name: '세탁/청소 할인 쿠폰',    desc: '세탁용품 1만원 이상 구매 시',      expire: '2026.12.31' },
+    { id: 'C_L5',        label: '10%',      name: '생필품 특가 쿠폰',       desc: '생필품 카테고리 1만원 이상',       expire: '2026.08.31' },
+    { id: 'COUPON_10PCT',label: '10%',      name: '리빙/세제 기획전 쿠폰',  desc: '세제 카테고리 1만원 이상 구매 시', expire: '2026.12.31' },
+    { id: 'C_L6',        label: '10%',      name: '욕실용품 할인 쿠폰',     desc: '욕실용품 1만원 이상 구매 시',      expire: '2026.07.31' },
+    { id: 'C_L7',        label: '10%',      name: '청결/위생 기획 쿠폰',    desc: '위생용품 카테고리 1만원 이상',     expire: '2026.12.31' },
+    { id: 'C_L8',        label: '10%',      name: '주거생활 할인 쿠폰',     desc: '주거용품 1만원 이상 구매 시',      expire: '2026.09.30' },
+    { id: 'C_L9',        label: '10%',      name: '가정용품 특별 쿠폰',     desc: '가정용품 카테고리 1만원 이상',     expire: '2026.12.31' },
   ];
 
   // 전체 맵: { productId: [couponId, ...] }
