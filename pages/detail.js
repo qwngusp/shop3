@@ -4,11 +4,11 @@ const DetailPage = (() => {
   const COUPON_RATE = 0.1;
 
   // 상품별 쿠폰 경로 강도
-  // 강도1(p006): 상세 → 쿠폰존 → 상세
-  // 강도2(그 외): 상세 → 메인 → 쿠폰존 → 상세
-  // 강도3(p004): 상세 → 메인 → 쿠폰존 → 리스트 → 상세
+  // 강도1(p001): 상세 → 쿠폰존 → 상세 복귀 + 바텀시트 자동 오픈
+  // 강도2(그 외): 상세 → 메인 → 쿠폰존 → 상세 복귀 + 바텀시트 자동 오픈
+  // 강도3(p004): 상세 → 메인 → 쿠폰존 → 리스트 → 상품 직접 찾아 상세 진입 → 바텀시트 자동 오픈
   const COUPON_LEVEL = {
-    'p006': 1,
+    'p001': 1,
     'p004': 3,
   };
 
@@ -323,7 +323,17 @@ const DetailPage = (() => {
     const level = COUPON_LEVEL[currentProduct.id] || 2;
     sessionStorage.setItem('coupon_from_product', currentProduct.id);
     sessionStorage.setItem('coupon_level', String(level));
-    sessionStorage.setItem('coupon_return_open', currentProduct.id);
+
+    if (level === 3) {
+      // 강도3: 쿠폰존 확인 → 리스트로 이동 (직접 상세 찾아 진입 유도)
+      sessionStorage.setItem('detail_coupon_level3', currentProduct.id);
+      sessionStorage.removeItem('coupon_return_open');
+    } else {
+      // 강도1/2: 쿠폰존 확인 → 상세 복귀 + 바텀시트 자동 오픈
+      sessionStorage.setItem('coupon_return_open', currentProduct.id);
+      sessionStorage.removeItem('detail_coupon_level3');
+    }
+
     closeCouponSheet();
 
     if (level === 1) {

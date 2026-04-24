@@ -117,14 +117,39 @@ const ListPage = (() => {
     document.body.style.overflow = '';
   };
 
-  // ── 쿠폰존으로 이동 (복귀 시 바텀시트 재오픈 트리거 설정) ──
+  // ── 쿠폰존으로 이동 (강도별 경로 분기, detail과 동일 구조) ──
+  // 강도1(p001): 리스트 → 쿠폰존 → 리스트 복귀 + 바텀시트 자동 오픈
+  // 강도2(기본): 리스트 → 메인 → 쿠폰존 → 리스트 복귀 + 바텀시트 자동 오픈
+  // 강도3(p004): 리스트 → 메인 → 쿠폰존 → 리스트 복귀 (바텀시트 없음)
+  const LIST_COUPON_LEVEL = {
+    'p001': 1,
+    'p004': 3,
+  };
+
   const goToCouponZone = (productId) => {
+    const level   = LIST_COUPON_LEVEL[productId] || 2;
     const product = products.find(p => p.id === productId);
     sessionStorage.setItem('coupon_from_product', productId);
-    sessionStorage.setItem('list_coupon_return', productId);
-    if (product) sessionStorage.setItem('list_coupon_return_price', String(product.originalPrice));
+
+    if (level === 3) {
+      // 강도3: 복귀만, 바텀시트 오픈 없음
+      sessionStorage.setItem('list_coupon_return_no_sheet', productId);
+      sessionStorage.removeItem('list_coupon_return');
+      sessionStorage.removeItem('list_coupon_return_price');
+    } else {
+      // 강도1/2: 복귀 + 바텀시트 자동 오픈
+      sessionStorage.setItem('list_coupon_return', productId);
+      if (product) sessionStorage.setItem('list_coupon_return_price', String(product.originalPrice));
+      sessionStorage.removeItem('list_coupon_return_no_sheet');
+    }
+
     closeCouponSheet();
-    Router.navigate('coupon-zone');
+
+    if (level === 1) {
+      Router.navigate('coupon-zone');
+    } else {
+      Router.navigate('main', { via: 'coupon' });
+    }
   };
 
   const applyAndClose = (productId, basePrice) => {
@@ -216,13 +241,19 @@ const ListPage = (() => {
     bindCategoryTabs();
     Router.updateCartBadge();
 
-    // 쿠폰존 복귀 시 해당 상품 바텀시트 자동 재오픈
+    // 강도1/2 복귀: 바텀시트 자동 오픈
     const returnProductId = sessionStorage.getItem('list_coupon_return');
     const returnPrice     = parseInt(sessionStorage.getItem('list_coupon_return_price') || '0');
     if (returnProductId && returnPrice) {
       sessionStorage.removeItem('list_coupon_return');
       sessionStorage.removeItem('list_coupon_return_price');
       setTimeout(() => openCouponSheet(returnProductId, returnPrice), 400);
+    }
+
+    // 강도3 복귀: 그냥 리스트로만 돌아옴 (바텀시트 없음)
+    const noSheetReturn = sessionStorage.getItem('list_coupon_return_no_sheet');
+    if (noSheetReturn) {
+      sessionStorage.removeItem('list_coupon_return_no_sheet');
     }
   };
 

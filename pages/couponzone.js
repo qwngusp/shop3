@@ -61,7 +61,7 @@ const CouponZonePage = (() => {
       <!-- 하단 고정 버튼 -->
       <div style="height:80px;"></div>
       <div class="bottom-bar">
-        <button class="btn btn-primary" onclick="Router.navigate('list')">
+        <button class="btn btn-primary" onclick="CouponZonePage.confirm()">
           확인
         </button>
       </div>
@@ -98,5 +98,29 @@ const CouponZonePage = (() => {
     }
   };
 
-  return { init, getCoupons: () => COUPONS };
+  // 확인 버튼 - 진입 경로 플래그 기반으로 목적지 분기
+  const confirm = () => {
+    // 상세 강도1/2: 상세 복귀 + 바텀시트 자동 오픈
+    const detailReturn = sessionStorage.getItem('coupon_return_open');
+    if (detailReturn) {
+      Router.navigate('detail', { id: detailReturn });
+      return;
+    }
+
+    // 상세 강도3: 리스트로 이동 (직접 상품 찾아 상세 진입 유도)
+    const detailLevel3 = sessionStorage.getItem('detail_coupon_level3');
+    if (detailLevel3) {
+      sessionStorage.removeItem('detail_coupon_level3');
+      // coupon_from_product는 유지 — 상세 진입 시 바텀시트 자동 오픈에 사용
+      sessionStorage.setItem('coupon_return_open', detailLevel3);
+      Router.navigate('list');
+      return;
+    }
+
+    // 리스트 강도1/2: 리스트 복귀 + 바텀시트 자동 오픈 (init에서 처리)
+    // 리스트 강도3: 리스트 복귀만 (init에서 처리)
+    Router.navigate('list');
+  };
+
+  return { init, getCoupons: () => COUPONS, confirm };
 })();
