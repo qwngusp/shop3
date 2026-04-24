@@ -15,15 +15,24 @@ const CouponZonePage = (() => {
     { id: 'C_L9',        label: '10,000원', name: '백화점 전용권',         desc: '입점 브랜드 15만원 이상',       expire: '2026.10.10' },
   ];
 
+  // 전체 맵: { productId: [couponId, ...] }
+  const getDownloadedMap = () => {
+    try { return JSON.parse(sessionStorage.getItem('couponzone_downloaded') || '{}'); } catch { return {}; }
+  };
+
+  // 현재 상품 컨텍스트 기준 다운로드 목록
   const getDownloaded = () => {
-    try { return JSON.parse(sessionStorage.getItem('couponzone_downloaded') || '[]'); } catch { return []; }
+    const productId = sessionStorage.getItem('coupon_from_product') || '__global__';
+    return getDownloadedMap()[productId] || [];
   };
 
   const saveDownload = (id) => {
-    const ids = getDownloaded();
-    if (!ids.includes(id)) {
-      ids.push(id);
-      sessionStorage.setItem('couponzone_downloaded', JSON.stringify(ids));
+    const productId = sessionStorage.getItem('coupon_from_product') || '__global__';
+    const map = getDownloadedMap();
+    if (!map[productId]) map[productId] = [];
+    if (!map[productId].includes(id)) {
+      map[productId].push(id);
+      sessionStorage.setItem('couponzone_downloaded', JSON.stringify(map));
     }
   };
 

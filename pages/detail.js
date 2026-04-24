@@ -3,33 +3,49 @@
 const DetailPage = (() => { 
   const COUPON_RATE = 0.1;
 
+  // 상품별 쿠폰 경로 강도
+  // 강도1(p006): 상세 → 쿠폰존 → 상세
+  // 강도2(그 외): 상세 → 메인 → 쿠폰존 → 상세
+  // 강도3(p004): 상세 → 메인 → 쿠폰존 → 리스트 → 상세
+  const COUPON_LEVEL = {
+    'p006': 1,
+    'p004': 3,
+  };
+
   let currentProduct = null;
   let selectedOption = null;
   let quantity = 1;
 
-  // ── 상품별 쿠폰 적용 상태 ──────────────────────────
-  const getAppliedMap = () => {
-    try { return JSON.parse(sessionStorage.getItem('coupon_applied_products') || '{}'); } catch { return {}; }
+  // 쿠폰 적용 여부 (상품별, list.js의 coupon_applied_products와 공유)
+  const getCouponApplied = () => {
+    try {
+      const map = JSON.parse(sessionStorage.getItem('coupon_applied_products') || '{}');
+      return !!map[currentProduct?.id];
+    } catch { return false; }
   };
-  const setApplied = (productId, val) => {
-    const map = getAppliedMap();
-    map[productId] = val;
-    sessionStorage.setItem('coupon_applied_products', JSON.stringify(map));
+  const setCouponApplied = () => {
+    try {
+      const map = JSON.parse(sessionStorage.getItem('coupon_applied_products') || '{}');
+      map[currentProduct.id] = true;
+      sessionStorage.setItem('coupon_applied_products', JSON.stringify(map));
+    } catch (e) { console.warn('setCouponApplied 실패:', e); }
   };
-  const isCouponApplied = (productId) => !!getAppliedMap()[productId];
 
-  // 다운로드된 쿠폰 목록 (전역 공유 - 상품 무관)
+  // ── 다운로드된 쿠폰 목록 (현재 상품 기준) ──
   const getDownloaded = () => {
-    try { return JSON.parse(sessionStorage.getItem('couponzone_downloaded') || '[]'); } catch { return []; }
+    try {
+      const map = JSON.parse(sessionStorage.getItem('couponzone_downloaded') || '{}');
+      return map[currentProduct?.id] || [];
+    } catch { return []; }
   };
 
-  // 상품의 기준 가격 (discountedPrice 사용)
-  const getBasePrice = () => currentProduct.discountedPrice;
+  // 상품의 기준 가격 (originalPrice 사용)
+  const getBasePrice = () => currentProduct.originalPrice;
 
-  const getCurrentPrice = () =>
-    isCouponApplied(currentProduct.id)
-      ? Math.floor(getBasePrice() * (1 - COUPON_RATE))
-      : getBasePrice();
+  const getCurrentPrice = () => {
+    if (getCouponApplied()) return Math.floor(getBasePrice() * (1 - COUPON_RATE));
+    return getBasePrice();
+  };
 
   // ── 초기화 ──────────────────────────────────────────
   const init = async (params) => {
@@ -39,15 +55,25 @@ const DetailPage = (() => {
     if (!currentProduct) { Router.navigate('list'); return; }
     selectedOption = currentProduct.options[0];
     quantity = 1;
+
+    // 쿠폰존이 현재 상품 기준으로 저장/조회하도록 컨텍스트 세팅
+    sessionStorage.setItem('coupon_from_product', currentProduct.id);
+
     render();
     bindEvents();
     Router.updateCartBadge();
+
+    // 쿠폰존 복귀 시 바텀시트 자동 오픈
+    const returnFlag = sessionStorage.getItem('coupon_return_open');
+    if (returnFlag === currentProduct.id) {
+      sessionStorage.removeItem('coupon_return_open');
+      setTimeout(() => openCouponSheet(), 300);
+    }
   };
 
   // ── 렌더 ────────────────────────────────────────────
   const render = () => {
     const p = currentProduct;
-    const applied = isCouponApplied(p.id);
     const page = document.getElementById('page-detail');
 
     page.innerHTML = `
@@ -80,9 +106,21 @@ const DetailPage = (() => {
           <h1 class="detail-name">${p.name} ${p.capacity}</h1>
           <span class="detail-per-unit">(${p.pricePerUnit})</span>
         </div>
-       
         <div class="detail-price-wrap" id="detail-price-wrap">
-          ${priceHTML(applied)}
+          ${getCouponApplied() ? `
+          <div class="detail-price-row">
+            <span class="detail-discount-rate">${COUPON_RATE * 100}%</span>
+            <span class="detail-price">${Math.floor(p.originalPrice * (1 - COUPON_RATE)).toLocaleString()}원</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:2px;">
+            <span class="detail-original-price">${p.originalPrice.toLocaleString()}원</span>
+            <span class="coupon-applied-tag">쿠폰 적용 ✓</span>
+          </div>
+          ` : `
+          <div class="detail-price-row">
+            <span class="detail-price">${p.originalPrice.toLocaleString()}원</span>
+          </div>
+          `}
         </div>
       </div>
 
@@ -90,7 +128,8 @@ const DetailPage = (() => {
 
       <!-- 쿠폰 영역 -->
       <div class="detail-coupon-row" id="detail-coupon-row">
-        ${couponRowHTML(applied)}
+        <span class="detail-coupon-label">쿠폰</span>
+        <button class="detail-coupon-btn" id="btn-open-coupon"><span>✅</span> 쿠폰 적용하기</button>
       </div>
 
       <div class="divider"></div>
@@ -99,12 +138,11 @@ const DetailPage = (() => {
         <span class="detail-delivery-label">배송 정보</span>
         <div class="detail-delivery-info">
           <p class="detail-delivery-addr">- 배송 받을 주소 › <strong>우리집</strong></p>
-          <p class="detail-delivery-note">- ${p.shipping} </p>
+          <p class="detail-delivery-note">- ${p.shipping}</p>
         </div>
       </div>
 
       <div class="divider"></div>
-
 
       <!-- 수량 -->
       <div class="detail-section">
@@ -134,47 +172,6 @@ const DetailPage = (() => {
     `;
   };
 
-  // ── 가격 HTML ────────────────────────────────────────
-  const priceHTML = (applied) => {
-    const basePrice = getBasePrice();
-    if (applied) {
-      const discounted = Math.floor(basePrice * (1 - COUPON_RATE));
-      return `
-        <div class="detail-price-row">
-          <span class="detail-discount-rate">${currentProduct.discountRate + COUPON_RATE * 100}%</span>
-          <span class="detail-price">${discounted.toLocaleString()}원</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px;margin-top:2px;">
-          <span class="detail-original-price">${basePrice.toLocaleString()}원</span>
-          <span class="coupon-applied-tag">쿠폰 적용 ✓</span>
-        </div>
-      `;
-    }
-    return `
-      <div class="detail-price-row">
-        <span class="detail-discount-rate">${currentProduct.discountRate}%</span>
-        <span class="detail-price">${basePrice.toLocaleString()}원</span>
-      </div>
-      <div style="margin-top:2px;">
-        <span class="detail-original-price">${currentProduct.originalPrice.toLocaleString()}원</span>
-      </div>
-    `;
-  };
-
-  // ── 쿠폰 버튼 HTML ────────────────────────────────────
-  const couponRowHTML = (applied) => {
-    if (applied) {
-      return `
-        <span class="detail-coupon-label">쿠폰</span>
-        <span class="detail-coupon-applied">10% 할인 쿠폰 적용 ✓</span>
-      `;
-    }
-    return `
-      <span class="detail-coupon-label">쿠폰</span>
-      <button class="detail-coupon-btn" id="btn-open-coupon"><span>✅</span> 쿠폰 적용하기 </button>
-    `;
-  };
-
   // ── 이벤트 바인딩 ────────────────────────────────────
   const bindEvents = () => {
     const p = currentProduct;
@@ -188,7 +185,6 @@ const DetailPage = (() => {
       if (quantity < 99) { quantity++; updateQtyDisplay(); }
     });
 
-    // 초기 금액 표시
     updateQtyDisplay();
 
     document.getElementById('btn-cart').addEventListener('click', () => {
@@ -205,13 +201,11 @@ const DetailPage = (() => {
 
     const couponBtn = document.getElementById('btn-open-coupon');
     if (couponBtn) {
-      couponBtn.addEventListener('click', () => {
-        openCouponSheet();
-      });
+      couponBtn.addEventListener('click', () => openCouponSheet());
     }
   };
 
-  // ── 쿠폰 바텀시트 열기 ───────────────────────────────
+  // ── 쿠폰 바텀시트 열기/닫기 ─────────────────────────
   const openCouponSheet = () => {
     renderCouponSheet();
     document.getElementById('overlay').classList.add('show');
@@ -230,58 +224,53 @@ const DetailPage = (() => {
   // ── 쿠폰 바텀시트 렌더 ──────────────────────────────
   const renderCouponSheet = () => {
     const downloaded = getDownloaded();
-    const hasCoupon  = downloaded.includes('COUPON_10PCT');
     const hasAny     = downloaded.length > 0;
     const content    = document.getElementById('coupon-sheet-content');
 
     if (!hasAny) {
-      // 다운받은 쿠폰이 아예 없는 경우
+      // 적용 가능 쿠폰 없음
       content.innerHTML = `
         <div class="coupon-sheet-header">
-          <div>
-            <h3>쿠폰 적용</h3>
-          </div>
+          <div><h3>쿠폰 적용</h3></div>
           <button onclick="DetailPage.closeCouponSheet()"
             style="font-size:22px;color:#999;width:36px;height:36px;display:flex;align-items:center;justify-content:center;">✕</button>
         </div>
         <div class="coupon-empty-state">
           <p class="coupon-empty-text">적용 가능한 쿠폰이 없습니다</p>
-          <button class="btn btn-primary coupon-goto-btn"
-            onclick="DetailPage.goToCouponZone()">
+          <button class="btn btn-primary coupon-goto-btn" onclick="DetailPage.goToCouponZone()">
             쿠폰 다운받으러 가기
           </button>
         </div>
       `;
     } else {
-      // 다운받은 쿠폰이 하나라도 있는 경우
+      // 쿠폰 보유 - 리스트 표시 + 항상 "쿠폰 받으러 가기" 버튼
       const allCoupons = CouponZonePage.getCoupons();
-      const applied = isCouponApplied(currentProduct.id);
+      const myCoupons  = allCoupons.filter(c => downloaded.includes(c.id));
 
       content.innerHTML = `
         <div class="coupon-sheet-header">
           <div>
             <h3>쿠폰 적용</h3>
-            <p style="font-size:13px;color:#999;margin-top:2px;">보유 쿠폰 ${downloaded.length}개</p>
+            <p style="font-size:13px;color:#999;margin-top:2px;">보유 쿠폰 ${myCoupons.length}개</p>
           </div>
           <button onclick="DetailPage.closeCouponSheet()"
             style="font-size:22px;color:#999;width:36px;height:36px;display:flex;align-items:center;justify-content:center;">✕</button>
         </div>
         <div class="coupon-apply-list">
-          ${allCoupons.filter(c => downloaded.includes(c.id)).map(c => {
+          ${myCoupons.map(c => {
             const canApply = c.id === 'COUPON_10PCT';
-            const isApplied = applied && canApply;
             return `
-              <div class="coupon-apply-item ${!canApply ? 'disabled' : ''}">
+              <div class="coupon-apply-item ${!canApply ? 'disabled' : ''}" id="coupon-item-${c.id}">
                 <div class="coupon-apply-item__left">
                   <span class="coupon-apply-item__amount ${!canApply ? 'muted' : ''}">${c.label}</span>
                   <span class="coupon-apply-item__name">${c.name}</span>
                   <span class="coupon-apply-item__desc">${c.desc}</span>
                   <span class="coupon-apply-item__expire">~ ${c.expire}</span>
                 </div>
-                <div class="coupon-apply-item__right">
+                <div class="coupon-apply-item__right" id="coupon-action-${c.id}">
                   ${canApply
-                    ? (isApplied
-                        ? `<span class="coupon-status applied">적용됨</span>`
+                    ? (getCouponApplied()
+                        ? `<span class="coupon-status applied">적용됨 ✓</span>`
                         : `<button class="coupon-apply-action-btn" onclick="DetailPage.applyCoupon('${c.id}')">적용</button>`)
                     : `<span class="coupon-status disabled">적용불가</span>`
                   }
@@ -292,30 +281,56 @@ const DetailPage = (() => {
         </div>
         <div style="padding:12px 16px 16px;display:flex;gap:8px;">
           <button class="btn btn-secondary" style="flex:1;" onclick="DetailPage.closeCouponSheet()">닫기</button>
-          ${!hasCoupon ? `
-            <button class="btn btn-primary" style="flex:1;" onclick="DetailPage.goToCouponZone()">쿠폰 받으러 가기</button>
-          ` : ''}
+          <button class="btn btn-primary" style="flex:1;" onclick="DetailPage.goToCouponZone()">쿠폰 받으러 가기</button>
         </div>
       `;
     }
   };
 
-  // 쿠폰 적용
+  // ── 쿠폰 적용 ───────────────────────────────────────
   const applyCoupon = (couponId) => {
     if (couponId !== 'COUPON_10PCT') return;
-    setApplied(currentProduct.id, true);
-    document.getElementById('detail-price-wrap').innerHTML = priceHTML(true);
-    document.getElementById('detail-coupon-row').innerHTML = couponRowHTML(true);
-    closeCouponSheet();
-    updateQtyDisplay();
+    const basePrice  = getBasePrice();
+    const discounted = Math.floor(basePrice * (1 - COUPON_RATE));
+
+    document.getElementById('detail-price-wrap').innerHTML = `
+      <div class="detail-price-row">
+        <span class="detail-discount-rate">${COUPON_RATE * 100}%</span>
+        <span class="detail-price">${discounted.toLocaleString()}원</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:2px;">
+        <span class="detail-original-price">${basePrice.toLocaleString()}원</span>
+        <span class="coupon-applied-tag">쿠폰 적용 ✓</span>
+      </div>
+    `;
+
+    document.getElementById('qty-total').textContent =
+      (discounted * quantity).toLocaleString() + '원';
+
+    setCouponApplied();
+
+    // 버튼 → 적용됨 상태로 변경
+    const actionEl = document.getElementById(`coupon-action-${couponId}`);
+    if (actionEl) {
+      actionEl.innerHTML = `<span class="coupon-status applied">적용됨 ✓</span>`;
+    }
+
     Utils.showToast('10% 할인 쿠폰이 적용되었습니다 🎉');
   };
 
-  // 쿠폰존으로 이동 (상품 ID 저장)
+  // ── 쿠폰존으로 이동 (강도별 경로 분기) ──────────────
   const goToCouponZone = () => {
+    const level = COUPON_LEVEL[currentProduct.id] || 2;
     sessionStorage.setItem('coupon_from_product', currentProduct.id);
+    sessionStorage.setItem('coupon_level', String(level));
+    sessionStorage.setItem('coupon_return_open', currentProduct.id);
     closeCouponSheet();
-    Router.navigate('main', { via: 'coupon' });
+
+    if (level === 1) {
+      Router.navigate('coupon-zone');
+    } else {
+      Router.navigate('main', { via: 'coupon' });
+    }
   };
 
   // ── 배송 토글 ────────────────────────────────────────
