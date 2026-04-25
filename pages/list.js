@@ -346,7 +346,7 @@ const ListPage = (() => {
         </div>
         <div class="product-row__footer">
           <div class="product-row__coupon-badge-row">${couponBadgeHTML}</div>
-          <span class="product-row__shipping"><span class="shipping-box-icon">📦</span>${p.shipping}</span>
+          <span class="product-row__shipping"><span class="shipping-box-icon"></span>${p.shipping}</span>
         </div>
       </div>
       ${rightColHTML}
