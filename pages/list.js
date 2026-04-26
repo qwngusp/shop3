@@ -122,8 +122,8 @@ const ListPage = (() => {
   // 강도2(기본): 리스트 → 메인 → 쿠폰존 → 리스트 복귀 + 바텀시트 자동 오픈
   // 강도3(p004): 리스트 → 메인 → 쿠폰존 → 리스트 복귀 (바텀시트 없음)
   const LIST_COUPON_LEVEL = {
-    'p001': 1,
-    'p004': 3,
+    'p001': 2,
+    'p004': 2,
   };
 
   const goToCouponZone = (productId) => {
